@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieShelf</title>
+    <link rel="icon" href="/static/img/claquete.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="header-inner">
+            <h1>🎬 MovieShelf</h1>
+            <p>Sua estante pessoal de filmes e séries</p>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main>
+
+        <!-- FORMULÁRIO DE ADICIONAR FILME -->
+        <section class="form-section">
+            <h2>Adicionar à estante</h2>
+            <div class="form-grid">
+
+                <input type="text" id="titulo" placeholder="Título do filme ou série" />
+
+                <select id="genero">
+                    <option value="">Gênero...</option>
+                    <option>Ação</option>
+                    <option>Comédia</option>
+                    <option>Drama</option>
+                    <option>Ficção Científica</option>
+                    <option>Terror</option>
+                    <option>Romance</option>
+                    <option>Animação</option>
+                    <option>Documentário</option>
+                    <option>Thriller</option>
+                </select>
+
+                <select id="status">
+                    <option value="">Status...</option>
+                    <option>Quero assistir</option>
+                    <option>Assistindo</option>
+                    <option>Assistido</option>
+                </select>
+
+                <input type="number" id="nota" placeholder="Nota (0-10)" min="0" max="10" step="0.5" />
+
+                <input type="text" id="comentario" placeholder="Comentário pessoal (opcional)" class="full-width" />
+
+                <button onclick="adicionarFilme()" class="btn-add full-width">
+                    + Adicionar à estante
+                </button>
+            </div>
+        </section>
+
+        <!-- FILTROS -->
+        <section class="filter-section">
+            <button class="filtro ativo" onclick="filtrar('Todos')">Todos</button>
+            <button class="filtro" onclick="filtrar('Quero assistir')">🕐 Quero assistir</button>
+            <button class="filtro" onclick="filtrar('Assistindo')">▶️ Assistindo</button>
+            <button class="filtro" onclick="filtrar('Assistido')">✅ Assistido</button>
+        </section>
+
+        <!-- LISTA DE FILMES -->
+        <section id="lista-filmes" class="lista-filmes">
+            <!-- Os filmes vão aparecer aqui via JavaScript -->
+            <div class="loading">Carregando sua estante...</div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div id="modal" class="modal-overlay" style="display:none">
+        <div class="modal-box">
+            <h2>✏️ Editar filme</h2>
+
+            <input type="hidden" id="edit-id" />
+            <input type="text"   id="edit-titulo"     placeholder="Título" />
+            <select id="edit-genero">
+                <option>Ação</option><option>Comédia</option><option>Drama</option>
+                <option>Ficção Científica</option><option>Terror</option>
+                <option>Romance</option><option>Animação</option>
+                <option>Documentário</option><option>Thriller</option>
+            </select>
+            <select id="edit-status">
+                <option>Quero assistir</option>
+                <option>Assistindo</option>
+                <option>Assistido</option>
+            </select>
+            <input type="number" id="edit-nota"       placeholder="Nota (0-10)" min="0" max="10" step="0.5" />
+            <input type="text"   id="edit-comentario" placeholder="Comentário" />
+
+            <div class="modal-buttons">
+                <button onclick="salvarEdicao()" class="btn-salvar">💾 Salvar</button>
+                <button onclick="fecharModal()"  class="btn-cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

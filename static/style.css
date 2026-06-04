@@ -1,0 +1,295 @@
+/* =============================================
+   VARIÁVEIS DE COR — muda aqui, muda em tudo!
+   ============================================= */
+:root {
+    --bg:        #0d0d0d;
+    --surface:   #1a1a1a;
+    --surface2:  #242424;
+    --accent:    #e63946;
+    --accent2:   #ff6b6b;
+    --text:      #f0f0f0;
+    --muted:     #888;
+    --border:    #2e2e2e;
+    --radius:    12px;
+}
+
+/* =============================================
+   RESET E BASE
+   ============================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+}
+
+/* =============================================
+   HEADER
+   ============================================= */
+header {
+    background: linear-gradient(135deg, #1a0000, #0d0d0d);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+}
+
+header h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(230, 57, 70, 0.4);
+}
+
+header p {
+    color: var(--muted);
+    margin-top: 0.3rem;
+    font-weight: 300;
+}
+
+/* =============================================
+   CONTEÚDO PRINCIPAL
+   ============================================= */
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* =============================================
+   FORMULÁRIO
+   ============================================= */
+.form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+.form-section h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.full-width { grid-column: 1 / -1; }
+
+input, select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+select option { background: var(--surface2); }
+
+.btn-add {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-add:hover    { background: var(--accent2); }
+.btn-add:active   { transform: scale(0.98); }
+
+/* =============================================
+   FILTROS
+   ============================================= */
+.filter-section {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.filtro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+    padding: 0.4rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filtro:hover  { border-color: var(--accent); color: var(--text); }
+.filtro.ativo  { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* =============================================
+   CARDS DE FILME
+   ============================================= */
+.lista-filmes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem;
+    transition: transform 0.2s, border-color 0.2s;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card:hover { transform: translateY(-3px); border-color: #444; }
+
+.card-titulo {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-genero {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.7rem;
+}
+
+.card-status {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.7rem;
+}
+
+.status-assistido     { background: #1a3a1a; color: #4caf50; }
+.status-assistindo    { background: #1a2a3a; color: #64b5f6; }
+.status-quero         { background: #2a2a1a; color: #ffb74d; }
+
+.card-nota {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.card-comentario {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.card-actions { display: flex; gap: 0.5rem; }
+
+.btn-editar, .btn-deletar {
+    flex: 1;
+    padding: 0.45rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.2s;
+}
+
+.btn-editar  { background: #2a2a3a; color: #64b5f6; }
+.btn-deletar { background: #2a1a1a; color: #ef5350; }
+.btn-editar:hover, .btn-deletar:hover { opacity: 0.8; }
+
+/* =============================================
+   EMPTY STATE
+   ============================================= */
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--muted);
+}
+
+.empty span { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+/* =============================================
+   MODAL DE EDIÇÃO
+   ============================================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.modal-box h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.modal-buttons { display: flex; gap: 0.8rem; margin-top: 0.5rem; }
+
+.btn-salvar {
+    flex: 1; background: var(--accent); color: white;
+    border: none; border-radius: 8px; padding: 0.8rem;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem;
+    cursor: pointer; transition: background 0.2s;
+}
+.btn-salvar:hover { background: var(--accent2); }
+
+.btn-cancelar {
+    flex: 1; background: var(--surface2); color: var(--muted);
+    border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem;
+    cursor: pointer;
+}
+
+.loading { text-align: center; color: var(--muted); padding: 2rem; }
