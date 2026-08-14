@@ -8,12 +8,15 @@ from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
 from typing import Optional
 import os
+from dotenv import load_dotenv 
+
+load_dotenv()
 
 # ================================================
 # CONFIGURAÇÃO DO BANCO DE DADOS
 # ================================================
 
-DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///./movieshelf.db')
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
 # O PostgreSQL no Render usa "postgres://" mas o SQLAlchemy exige "postgresql://"
 if DATABASE_URL.startswith('postgres://'):
