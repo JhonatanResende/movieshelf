@@ -1,129 +1,178 @@
-from flask import Flask, request, jsonify, render_template
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movieshelf.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-
-# ================================================
-# MODELO
-# ================================================
-
-class Filme(db.Model):
-    id         = db.Column(db.Integer, primary_key=True)
-    titulo     = db.Column(db.String(200), nullable=False)
-    genero     = db.Column(db.String(100), nullable=False)
-    nota       = db.Column(db.Float, nullable=True)
-    status     = db.Column(db.String(50), nullable=False)
-    comentario = db.Column(db.String(500), nullable=True)
-
-    # Transforma o filme num dicionário (para enviar como JSON)
-    def to_dict(self):
-        return {
-            'id':         self.id,
-            'titulo':     self.titulo,
-            'genero':     self.genero,
-            'nota':       self.nota,
-            'status':     self.status,
-            'comentario': self.comentario
-        }
-
-
-# ================================================
-# ROTA 1 — Página inicial (retorna o HTML)
-# ================================================
-
-@app.route('/')
-def index():
-    return render_template('index.html') 
-
-
-# ================================================
-# ROTA 2 — LISTAR todos os filmes (GET)
-# ================================================
-
-@app.route('/filmes', methods=['GET'])
-def listar_filmes():
-    filmes = Filme.query.all()          # busca TODOS os filmes no banco
-    return jsonify([f.to_dict() for f in filmes])
-
-
-# ================================================
-# ROTA 3 — ADICIONAR um filme (POST)
-# ================================================
-
-@app.route('/filmes', methods=['POST'])
-def adicionar_filme():
-    dados = request.get_json()          # pega os dados enviados pelo front-end
-
-    # Validação: campos obrigatórios precisam estar presentes
-    if not dados.get('titulo') or not dados.get('genero') or not dados.get('status'):
-        return jsonify({'erro': 'titulo, genero e status são obrigatórios'}), 400
-
-    novo_filme = Filme(
-        titulo     = dados['titulo'],
-        genero     = dados['genero'],
-        nota       = dados.get('nota'),       # .get() retorna None se não existir
-        status     = dados['status'],
-        comentario = dados.get('comentario')
-    )
-
-    db.session.add(novo_filme)          # prepara para salvar
-    db.session.commit()                 # salva de verdade no banco
-
-    return jsonify(novo_filme.to_dict()), 201   # 201 = "criado com sucesso"
-
-
-# ================================================
-# ROTA 4 — EDITAR um filme (PUT)
-# ================================================
-
-@app.route('/filmes/<int:id>', methods=['PUT'])
-def editar_filme(id):
-    # Busca o filme pelo ID, se não achar retorna erro 404
-    filme = Filme.query.get_or_404(id)
-    dados = request.get_json()
-
-    # Atualiza só os campos que foram enviados
-    filme.titulo     = dados.get('titulo',     filme.titulo)
-    filme.genero     = dados.get('genero',     filme.genero)
-    filme.nota       = dados.get('nota',       filme.nota)
-    filme.status     = dados.get('status',     filme.status)
-    filme.comentario = dados.get('comentario', filme.comentario)
-
-    db.session.commit()                 # salva as mudanças
-
-    return jsonify(filme.to_dict())
-
-
-# ================================================
-# ROTA 5 — DELETAR um filme (DELETE)
-# ================================================
-
-@app.route('/filmes/<int:id>', methods=['DELETE'])
-def deletar_filme(id):
-    filme = Filme.query.get_or_404(id)  # busca o filme, ou retorna 404
-
-    db.session.delete(filme)            # marca para deletar
-    db.session.commit()                 # deleta de verdade
-
-    return jsonify({'mensagem': f'Filme "{filme.titulo}" deletado com sucesso!'})
-
-
-# ================================================
-# INICIALIZAR
-# ================================================
-
+from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session
+from pydantic import BaseModel
+from typing import Optional
 import os
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        print('✅ Banco de dados pronto!')
-    app.run(debug=True)
-else:
-    with app.app_context():
-        db.create_all()
+# ================================================
+# CONFIGURAÇÃO DO BANCO DE DADOS
+# ================================================
+
+DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///./movieshelf.db')
+
+# O PostgreSQL no Render usa "postgres://" mas o SQLAlchemy exige "postgresql://"
+if DATABASE_URL.startswith('postgres://'):
+    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+Base = declarative_base()
+
+
+# ================================================
+# MODELO — a tabela do banco
+# ================================================
+
+class FilmeModel(Base):
+    __tablename__ = 'filmes'
+
+    id         = Column(Integer, primary_key=True, index=True)
+    titulo     = Column(String(200), nullable=False)
+    genero     = Column(String(100), nullable=False)
+    nota       = Column(Float, nullable=True)
+    status     = Column(String(50), nullable=False)
+    comentario = Column(String(500), nullable=True)
+
+
+# Cria as tabelas no banco
+Base.metadata.create_all(bind=engine)
+
+
+# ================================================
+# SCHEMAS — valida os dados que chegam pela API
+# ================================================
+
+class FilmeSchema(BaseModel):
+    # Define o formato dos dados que a API aceita
+    titulo:     str
+    genero:     str
+    status:     str
+    nota:       Optional[float] = None
+    comentario: Optional[str]   = None
+
+class FilmeResposta(FilmeSchema):
+    # Inclui o id na resposta
+    id: int
+
+    class Config:
+        from_attributes = True
+        # Permite converter objeto do banco em JSON automaticamente
+
+
+# ================================================
+# APLICAÇÃO FASTAPI
+# ================================================
+
+app = FastAPI(title='MovieShelf API')
+
+# Serve os arquivos estáticos (CSS, JS, imagens)
+app.mount('/static', StaticFiles(directory='static'), name='static')
+
+# Configura os templates HTML
+templates = Jinja2Templates(directory='templates')
+
+
+# ================================================
+# FUNÇÃO AUXILIAR — abre e fecha sessão do banco
+# ================================================
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db      # "empresta" a sessão pra rota
+    finally:
+        db.close()    # sempre fecha no final
+
+
+# ================================================
+# ROTA 1 — Página inicial
+# ================================================
+
+@app.get('/')
+def index(request: Request):
+    return templates.TemplateResponse(request, 'index.html')
+
+
+# ================================================
+# ROTA 2 — LISTAR filmes (GET)
+# ================================================
+
+@app.get('/filmes', response_model=list[FilmeResposta])
+def listar_filmes():
+    db = SessionLocal()
+    filmes = db.query(FilmeModel).all()
+    db.close()
+    return filmes
+
+
+# ================================================
+# ROTA 3 — ADICIONAR filme (POST)
+# ================================================
+
+@app.post('/filmes', response_model=FilmeResposta, status_code=201)
+def adicionar_filme(filme: FilmeSchema):
+    # O FastAPI já valida os dados automaticamente pelo Schema!
+    db = SessionLocal()
+
+    novo_filme = FilmeModel(**filme.model_dump())
+    # **filme.model_dump() converte o schema num dicionário
+    # e passa cada campo pro modelo do banco
+
+    db.add(novo_filme)
+    db.commit()
+    db.refresh(novo_filme)  # atualiza o objeto com o id gerado
+    db.close()
+
+    return novo_filme
+
+
+# ================================================
+# ROTA 4 — EDITAR filme (PUT)
+# ================================================
+
+@app.put('/filmes/{id}', response_model=FilmeResposta)
+def editar_filme(id: int, dados: FilmeSchema):
+    db = SessionLocal()
+    filme = db.query(FilmeModel).filter(FilmeModel.id == id).first()
+
+    if not filme:
+        db.close()
+        raise HTTPException(status_code=404, detail='Filme não encontrado')
+        # HTTPException substitui o "abort(404)" do Flask
+
+    for campo, valor in dados.model_dump().items():
+        setattr(filme, campo, valor)
+        # setattr: atualiza cada campo dinamicamente
+        # equivalente a: filme.titulo = dados.titulo, etc.
+
+    db.commit()
+    db.refresh(filme)
+    db.close()
+
+    return filme
+
+
+# ================================================
+# ROTA 5 — DELETAR filme (DELETE)
+# ================================================
+
+@app.delete('/filmes/{id}')
+def deletar_filme(id: int):
+    db = SessionLocal()
+    filme = db.query(FilmeModel).filter(FilmeModel.id == id).first()
+
+    if not filme:
+        db.close()
+        raise HTTPException(status_code=404, detail='Filme não encontrado')
+
+    titulo = filme.titulo
+    db.delete(filme)
+    db.commit()
+    db.close()
+
+    return {'mensagem': f'Filme "{titulo}" deletado com sucesso!'}
