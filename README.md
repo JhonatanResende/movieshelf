@@ -13,6 +13,14 @@ Adicione títulos, dê notas, marque o status e deixe seus comentários.
 - **PostgreSQL** + **SQLAlchemy** — banco de dados
 - **HTML + CSS + JavaScript** — front-end
 
+## 🏗️ Arquitetura
+
+```
+frontend/   →  interface (HTML, CSS, JS) — hospedado na Vercel
+backend/    →  API REST (FastAPI)        — hospedado no Render
+banco       →  PostgreSQL               — hospedado no Railway
+```
+
 ## ✨ Funcionalidades
 
 - ➕ Adicionar filmes e séries
@@ -43,12 +51,13 @@ source venv/bin/activate
 
 **3. Instale as dependências:**
 ```bash
+cd backend
 pip install -r requirements.txt
 ```
 
 **4. Configure as variáveis de ambiente:**
 
-Crie um arquivo `.env` na raiz do projeto:
+Crie um arquivo `.env` dentro da pasta `backend/`:
 ```
 DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/movieshelf
 ```
@@ -58,13 +67,12 @@ DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/movieshelf
 uvicorn app:app --reload
 ```
 
-**6. Acesse no navegador:**
-```
-http://localhost:8000
-```
+**6. Abra o front-end:**
+
+Abra o arquivo `frontend/index.html` diretamente no navegador.
 
 > 📄 Documentação da API disponível em `http://localhost:8000/docs`
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](https://github.com/JhonatanResende/movieshelf/blob/main/LICENSE) para mais detalhes.
