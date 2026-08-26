@@ -2,7 +2,7 @@
 // URL DO BACK-END
 // Quando fizer o deploy no Render, troca pelo link real!
 // =============================================
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://movieshelf-c9ld.onrender.com';
 
 
 // =============================================
