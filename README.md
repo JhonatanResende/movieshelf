@@ -7,6 +7,11 @@ Sua estante pessoal de filmes e séries favoritos.
 Aplicação web completa para gerenciar sua lista de filmes e séries.
 Adicione títulos, dê notas, marque o status e deixe seus comentários.
 
+## 🌐 Demo
+
+- **Sistema:** https://movieshelf-nine.vercel.app
+- **API (Swagger UI):** https://movieshelf-c9ld.onrender.com/docs
+
 ## 🛠️ Tecnologias utilizadas
 
 - **Python** + **FastAPI** — back-end e API REST
