@@ -23,7 +23,7 @@ Adicione títulos, dê notas, marque o status e deixe seus comentários.
 ```
 frontend/   →  interface (HTML, CSS, JS) — hospedado na Vercel
 backend/    →  API REST (FastAPI)        — hospedado no Render
-banco       →  PostgreSQL               — hospedado no Railway
+banco       →  PostgreSQL               — hospedado no Supabase
 ```
 
 ## ✨ Funcionalidades
