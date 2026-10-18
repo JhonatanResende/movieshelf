@@ -1,6 +1,6 @@
 // =============================================
-// URL DO BACK-END
-// Quando fizer o deploy no Render, troca pelo link real!
+// URL DO BACKEND
+// Backend hospedado no Render
 // =============================================
 const API_URL = 'https://movieshelf-c9ld.onrender.com';
 
