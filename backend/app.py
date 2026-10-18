@@ -67,7 +67,7 @@ app = FastAPI(title='MovieShelf API')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],    # vamos restringir depois do deploy na Vercel
+    allow_origins=["https://movieshelf-nine.vercel.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
