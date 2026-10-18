@@ -14,9 +14,9 @@ Adicione títulos, dê notas, marque o status e deixe seus comentários.
 
 ## 🛠️ Tecnologias utilizadas
 
-- **Python** + **FastAPI** — back-end e API REST
+- **Python** + **FastAPI** — backend e API REST
 - **PostgreSQL** + **SQLAlchemy** — banco de dados
-- **HTML + CSS + JavaScript** — front-end
+- **HTML + CSS + JavaScript** — frontend
 
 ## 🏗️ Arquitetura
 
