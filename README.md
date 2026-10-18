@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 Crie um arquivo `.env` dentro da pasta `backend/`:
 ```
-DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/movieshelf
+DATABASE_URL=postgresql://postgres:SUA_SENHA@db.SEU_PROJECT_ID.supabase.co:5432/postgres
 ```
 
 **5. Rode o servidor:**
